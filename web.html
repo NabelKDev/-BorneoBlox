@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borneobux - Toko Robux Terpercaya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <style>
+        /* CONFIGURATION - GANTI NILAI INI UNTUK UPDATE WEBSITE */
+        :root {
+            --robux-price: 100; /* Harga per Robux dalam Rupiah */
+            --whatsapp-number: 6281549764588; /* Nomor WhatsApp tanpa tanda + */
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #332d20 0%, #382e02 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .robux-icon {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .roblox-theme {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+        }
+        .modal {
+            backdrop-filter: blur(10px);
+        }
+        .nav-mobile {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .nav-mobile.active {
+            transform: translateX(0);
+        }
+        .stock-indicator {
+            position: relative;
+            overflow: hidden;
+        }
+        .stock-low {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+        }
+        .stock-medium {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+        }
+        .stock-high {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+        .admin-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .admin-modal {
+            backdrop-filter: blur(10px);
+        }
+        .live-indicator {
+            animation: live-pulse 2s infinite;
+        }
+        @keyframes live-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    
+                        <img src="Borneobux.png" alt="Borneobux Logo" class="w-22 h-16" id="logo">
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Borneobux</h1>
+                        <p class="text-sm opacity-90">Toko Robux Terpercaya</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center space-x-6">
+                    <a href="#packages" class="hover:text-yellow-300 transition">Paket</a>
+                    <a href="#custom" class="hover:text-yellow-300 transition">Custom</a>
+                    <a href="#games" class="hover:text-yellow-300 transition">Game Kami</a>
+                    <a href="#tutorial" class="hover:text-yellow-300 transition">Tutorial</a>
+                    <a href="#help" class="hover:text-yellow-300 transition">Bantuan</a>
+                    <a href="#contact" class="hover:text-yellow-300 transition">Kontak</a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-white">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav id="mobileNav" class="nav-mobile fixed top-0 left-0 h-full w-64 bg-white shadow-xl z-50 lg:hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-xl font-bold text-gray-800">Menu</h2>
+                    <button onclick="toggleMobileMenu()" class="text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <a href="#packages" onclick="toggleMobileMenu()" class="block text-gray-700 hover:text-blue-600 transition">📦 Paket</a>
+                    <a href="#custom" onclick="toggleMobileMenu()" class="block text-gray-700 hover:text-blue-600 transition">⚙️ Custom</a>
+                    <a href="#games" onclick="toggleMobileMenu()" class="block text-gray-700 hover:text-blue-600 transition">🎮 Game Kami</a>
+                    <a href="#tutorial" onclick="toggleMobileMenu()" class="block text-gray-700 hover:text-blue-600 transition">📚 Tutorial</a>
+                    <a href="#help" onclick="toggleMobileMenu()" class="block text-gray-700 hover:text-blue-600 transition">❓ Bantuan</a>
+                    <a href="#contact" onclick="toggleMobileMenu()" class="block text-gray-700 hover:text-blue-600 transition">📞 Kontak</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold mb-4">
+                Beli <span class="robux-icon text-blue-300">Robux</span> Murah!
+            </h2>
+            <p class="text-xl mb-6 opacity-90">Hanya Rp 100 per Robux - Proses Cepat & Aman</p>
+            
+            <!-- Important Notice -->
+            <div class="bg-yellow-500/20 border border-yellow-300 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+                <div class="flex items-center justify-center space-x-2 text-yellow-100">
+                    <i class="fas fa-clock text-xl"></i>
+                    <p class="font-semibold">⏰ Proses pending Robux memakan waktu 5-6 hari</p>
+                </div>
+            </div>
+
+            <!-- Live Stock Status -->
+            <div class="bg-white/10 backdrop-blur rounded-lg p-4 mb-8 max-w-xl mx-auto">
+                <div class="flex items-center justify-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-400 rounded-full live-indicator"></div>
+                        <span class="text-sm font-medium">Live Stock</span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm opacity-90">Total Stock Tersedia</p>
+                        <p class="text-2xl font-bold" id="totalStock">Loading...</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm opacity-90">Last Update</p>
+                        <p class="text-sm font-medium" id="lastUpdate">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center items-center space-x-4 mb-8 flex-wrap">
+                <div class="bg-white/20 backdrop-blur rounded-lg px-6 py-3 m-2">
+                    <i class="fas fa-shield-alt text-green-300 mr-2"></i>
+                    <span>100% Aman</span>
+                </div>
+                <div class="bg-white/20 backdrop-blur rounded-lg px-6 py-3 m-2">
+                    <i class="fas fa-clock text-blue-300 mr-2"></i>
+                    <span>Proses Cepat</span>
+                </div>
+                <div class="bg-white/20 backdrop-blur rounded-lg px-6 py-3 m-2">
+                    <i class="fas fa-heart text-red-300 mr-2"></i>
+                    <span>Terpercaya</span>
+                </div>
+            </div>
+            <a href="#packages" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-4 px-8 rounded-full text-lg transition pulse-animation">
+                Mulai Belanja Sekarang
+            </a>
+        </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="packages" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">Paket Robux</h3>
+                <p class="text-gray-600 text-lg">Pilih paket yang sesuai dengan kebutuhan Anda</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Package cards akan di-generate oleh JavaScript -->
+                <div id="packageContainer"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Order Section -->
+    <section id="custom" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">Custom Order</h3>
+                <p class="text-gray-600 text-lg">Tentukan sendiri jumlah Robux yang Anda inginkan</p>
+            </div>
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Jumlah Robux</label>
+                    <div class="relative">
+                        <input type="number" id="customRobux" placeholder="Masukkan jumlah Robux" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-lg">
+                        <div class="absolute right-3 top-3 text-gray-400">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <div class="bg-blue-50 rounded-lg p-4 text-center">
+                        <p class="text-gray-600 mb-2">Total Harga:</p>
+                        <p class="text-3xl font-bold text-blue-600" id="customPrice">Rp 0</p>
+                    </div>
+                </div>
+                <button onclick="selectCustom()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition">
+                    Lanjut ke Pemesanan
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">🎮 Game Borneo Highland Studio</h3>
+                <p class="text-gray-600 text-lg">Mainkan game-game seru buatan kami!</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Game 1 -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 card-hover border border-green-200">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 roblox-theme rounded-full flex items-center justify-center">
+                            <i class="fas fa-mountain text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">Mount Kahung</h4>
+                        <p class="text-gray-600 mb-4 text-sm">Petualangan seru di gunung</p>
+                        <a href="https://www.roblox.com/share?code=64b9168279e74040aa0359df6bca5ffa&type=ExperienceDetails&stamp=1753913998449" target="_blank" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition inline-block">
+                            Main Sekarang
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Game 2 -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 card-hover border border-blue-200">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 roblox-theme rounded-full flex items-center justify-center">
+                            <i class="fas fa-tree text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">Bukit Biru</h4>
+                        <p class="text-gray-600 mb-4 text-sm">Eksplorasi bukit yang indah</p>
+                        <a href="https://www.roblox.com/share?code=5f36f268a5bd7d4ea5ef9f48f6d0688e&type=ExperienceDetails&stamp=1753914026590" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition inline-block">
+                            Main Sekarang
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Game 3 -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 card-hover border border-purple-200">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 roblox-theme rounded-full flex items-center justify-center">
+                            <i class="fas fa-hiking text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">Gunung Kalimantan</h4>
+                        <p class="text-gray-600 mb-4 text-sm">Pendakian menantang</p>
+                        <a href="https://www.roblox.com/share?code=b93584f2c7504c4085c929512ba7beb8&type=ExperienceDetails&stamp=1753914053750" target="_blank" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition inline-block">
+                            Main Sekarang
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Game 4 - Coming Soon -->
+                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 card-hover border border-yellow-200 relative">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-yellow-500 text-white px-4 py-1 rounded-full text-sm font-bold">COMING SOON</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-400 rounded-full flex items-center justify-center">
+                            <i class="fas fa-lock text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">Mount Parong</h4>
+                        <p class="text-gray-600 mb-4 text-sm">Segera hadir!</p>
+                        <button disabled class="w-full bg-gray-400 text-white font-bold py-3 px-6 rounded-lg cursor-not-allowed">
+                            Coming Soon
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tutorial Section -->
+    <section id="tutorial" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">📚 Tutorial Gamepass</h3>
+                <p class="text-gray-600 text-lg">Pelajari cara membuat gamepass di Roblox</p>
+            </div>
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-1/2 p-8">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">Cara Membuat Gamepass</h4>
+                        <p class="text-gray-600 mb-6">Tutorial lengkap membuat gamepass di Roblox Studio untuk monetisasi game Anda.</p>
+                        <div class="space-y-3 mb-6">
+                        </div>
+                        <a href="https://youtu.be/bK3bsBxN_Rc?si=LH84NW7z0JuGlXt1" target="_blank" class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition inline-flex items-center">
+                            <i class="fab fa-youtube mr-2"></i>
+                            Tonton Tutorial
+                        </a>
+                    </div>
+                    <div class="md:w-1/2 bg-gray-200 flex items-center justify-center p-8">
+                        <div class="text-center">
+                            <i class="fab fa-youtube text-6xl text-red-600 mb-4"></i>
+                            <p class="text-gray-600">Video Tutorial Lengkap</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Help Section -->
+    <section id="help" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">❓ Bantuan & FAQ</h3>
+                <p class="text-gray-600 text-lg">Pertanyaan yang sering diajukan</p>
+            </div>
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-4">
+                    <!-- FAQ Items -->
+                    <div class="bg-gray-50 rounded-lg border border-gray-200">
+                        <button onclick="toggleFAQ(1)" class="w-full text-left p-6 focus:outline-none">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-lg font-semibold text-gray-800">Berapa lama proses pengiriman Robux?</h4>
+                                <i class="fas fa-chevron-down transition-transform" id="icon1"></i>
+                            </div>
+                        </button>
+                        <div id="faq1" class="hidden px-6 pb-6">
+                            <p class="text-gray-600">Proses pending Robux memakan waktu 5-6 hari setelah pembayaran dikonfirmasi. Ini adalah kebijakan dari Roblox untuk keamanan transaksi.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg border border-gray-200">
+                        <button onclick="toggleFAQ(2)" class="w-full text-left p-6 focus:outline-none">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-lg font-semibold text-gray-800">Apa saja metode pembayaran yang tersedia?</h4>
+                                <i class="fas fa-chevron-down transition-transform" id="icon2"></i>
+                            </div>
+                        </button>
+                        <div id="faq2" class="hidden px-6 pb-6">
+                            <p class="text-gray-600">Kami menerima pembayaran melalui DANA, QRIS, dan Bank BSI. Pilih metode yang paling nyaman untuk Anda.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg border border-gray-200">
+                        <button onclick="toggleFAQ(3)" class="w-full text-left p-6 focus:outline-none">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-lg font-semibold text-gray-800">Apakah transaksi aman?</h4>
+                                <i class="fas fa-chevron-down transition-transform" id="icon3"></i>
+                            </div>
+                        </button>
+                        <div id="faq3" class="hidden px-6 pb-6">
+                            <p class="text-gray-600">Ya, 100% aman! Kami menggunakan sistem gamepass resmi Roblox untuk transfer Robux, sehingga akun Anda tetap aman.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg border border-gray-200">
+                        <button onclick="toggleFAQ(4)" class="w-full text-left p-6 focus:outline-none">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-lg font-semibold text-gray-800">Bagaimana cara melakukan refund?</h4>
+                                <i class="fas fa-chevron-down transition-transform" id="icon4"></i>
+                            </div>
+                        </button>
+                        <div id="faq4" class="hidden px-6 pb-6">
+                            <p class="text-gray-600">Refund hanya dapat dilakukan jika ada kesalahan dari pihak kami. Hubungi customer service melalui WhatsApp untuk proses refund.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel">
+        <button onclick="toggleAdminPanel()" class="bg-red-600 hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center">
+            <i class="fas fa-cog"></i>
+        </button>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden admin-modal">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+                <button onclick="closeAdminPanel()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">🔐 Admin Panel</h3>
+                
+                <!-- Admin Login -->
+                <div id="adminLogin" class="mb-6">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Admin Password</label>
+                        <input type="password" id="adminPassword" placeholder="Masukkan password admin" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                    <button onclick="loginAdmin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        Login
+                    </button>
+                </div>
+
+                <!-- Admin Controls (Hidden by default) -->
+                <div id="adminControls" class="hidden">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Update Total Stock</label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="newStockAmount" placeholder="Jumlah Robux" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                                <button onclick="updateStock()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Quick Actions</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="quickStock(10000)" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-sm">+10K</button>
+                                <button onclick="quickStock(25000)" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-sm">+25K</button>
+                                <button onclick="quickStock(50000)" class="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded text-sm">+50K</button>
+                                <button onclick="quickStock(100000)" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded text-sm">+100K</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="font-bold text-gray-700 mb-2">Current Status:</h4>
+                            <div class="text-sm space-y-1">
+                                <p>Stock: <span id="adminCurrentStock" class="font-bold">-</span> Robux</p>
+                                <p>Status: <span id="adminStockStatus" class="font-bold">-</span></p>
+                                <p>Last Update: <span id="adminLastUpdate" class="font-bold">-</span></p>
+                            </div>
+                        </div>
+
+                        <button onclick="resetStock()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                            Reset Stock
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="orderForm" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden modal">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+                <button onclick="closeOrderForm()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Form Pemesanan</h3>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Username Roblox</label>
+                    <input type="text" id="username" placeholder="Masukkan username Roblox" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Total Robux</label>
+                    <input type="number" id="totalRobux" readonly class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Total Harga</label>
+                    <input type="text" id="totalPrice" readonly class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Metode Pembayaran</label>
+                    <select id="paymentMethod" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                        <option value="">Pilih metode pembayaran</option>
+                        <option value="DANA">💳 DANA</option>
+                        <option value="QRIS">📱 QRIS</option>
+                        <option value="Bank BSI">🏦 Bank BSI</option>
+                    </select>
+                </div>
+
+                <button onclick="sendWhatsApp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition">
+                    <i class="fab fa-whatsapp mr-2"></i>
+                    Kirim ke WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Media Section -->
+    <section class="py-16 bg-white" id="contact">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-4xl font-bold text-gray-800 mb-8">Follow Kami</h3>
+            <div class="flex justify-center space-x-6 mb-8 flex-wrap">
+                <a href="https://tiktok.com/@borneoohighlandstudio" target="_blank" class="bg-black hover:bg-gray-800 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl transition m-2">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="https://instagram.com/borneohighlandstudio" target="_blank" class="bg-gradient-to-br from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl transition m-2">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://discord.gg/h9YN57YuZB" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl transition m-2">
+                    <i class="fab fa-discord"></i>
+                </a>
+                <a href="https://wa.me/6281549764588" target="_blank" class="bg-green-600 hover:bg-green-700 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl transition m-2">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+            <p class="text-gray-600 text-lg">Ikuti media sosial kami untuk update terbaru dan promo menarik!</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center mr-3">
+                    <img src="Borneobux.png" alt="Borneobux Logo" class="w-6 h-6">
+                </div>
+                <h4 class="text-xl font-bold">Borneobux</h4>
+            </div>
+            <p class="opacity-90 mb-4">Toko Robux terpercaya dengan harga terjangkau</p>
+            <p class="text-sm opacity-75">&copy; 2025 Borneobux. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== KONFIGURASI WEBSITE - GANTI NILAI INI UNTUK UPDATE =====
+        const CONFIG = {
+            robuxPrice: 100,                    // Harga per Robux dalam Rupiah
+            whatsappNumber: '6281549764588',    // Nomor WhatsApp
+            adminPassword: 'borneobux2025',     // Password admin (GANTI INI!)
+            defaultStock: 50000,               // Stock awal Robux
+            
+            // Firebase Configuration (GANTI DENGAN CONFIG FIREBASE ANDA!)
+            firebase: {
+                apiKey: "your-api-key-here",
+                authDomain: "your-project.firebaseapp.com",
+                databaseURL: "https://your-project-default-rtdb.firebaseio.com/",
+                projectId: "your-project-id",
+                storageBucket: "your-project.appspot.com",
+                messagingSenderId: "123456789",
+                appId: "your-app-id"
+            },
+            
+            // Alternatif: JSON Storage Service (Gratis & Mudah)
+            jsonStorage: {
+                url: "https://api.jsonbin.io/v3/b/YOUR_BIN_ID",
+                apiKey: "YOUR_API_KEY", // Daftar di jsonbin.io
+                enabled: false // Set true jika mau pakai ini
+            },
+            
+            packages: [                         // Paket Robux yang tersedia
+                { robux: 100, color: 'blue', icon: 'coins' },
+                { robux: 250, color: 'purple', icon: 'gem' },
+                { robux: 500, color: 'green', icon: 'star', popular: true },
+                { robux: 1000, color: 'yellow', icon: 'crown' }
+            ],
+            games: [                           // Game yang dibuat studio
+                {
+                    name: 'Mount Kahung',
+                    description: 'Petualangan seru di gunung',
+                    url: 'https://www.roblox.com/share?code=64b9168279e74040aa0359df6bca5ffa&type=ExperienceDetails&stamp=1753913998449',
+                    icon: 'mountain',
+                    color: 'green'
+                },
+                {
+                    name: 'Bukit Biru',
+                    description: 'Eksplorasi bukit yang indah',
+                    url: 'https://www.roblox.com/share?code=5f36f268a5bd7d4ea5ef9f48f6d0688e&type=ExperienceDetails&stamp=1753914026590',
+                    icon: 'tree',
+                    color: 'blue'
+                },
+                {
+                    name: 'Gunung Kalimantan',
+                    description: 'Pendakian menantang',
+                    url: 'https://www.roblox.com/share?code=b93584f2c7504c4085c929512ba7beb8&type=ExperienceDetails&stamp=1753914053750',
+                    icon: 'hiking',
+                    color: 'purple'
+                },
+                {
+                    name: 'Mount Parong',
+                    description: 'Segera hadir!',
+                    url: '#',
+                    icon: 'lock',
+                    color: 'yellow',
+                    comingSoon: true
+                }
+            ],
+            socialMedia: {                     // Link social media
+                tiktok: 'https://tiktok.com/@borneoohighlandstudio',
+                instagram: 'https://instagram.com/borneohighlandstudio',
+                discord: 'https://discord.gg/h9YN57YuZB',
+                whatsapp: 'https://wa.me/6281549764588'
+            },
+            tutorialVideo: 'https://youtu.be/bK3bsBxN_Rc?si=LH84NW7z0JuGlXt1'
+        };
+
+        // ===== LIVE DATABASE SYSTEM =====
+        
+        let database = null;
+        let isFirebaseEnabled = false;
+
+        // Initialize Firebase atau alternatif storage
+        function initializeDatabase() {
+            // Cek apakah Firebase dikonfigurasi
+            if (CONFIG.firebase.apiKey !== "your-api-key-here") {
+                try {
+                    firebase.initializeApp(CONFIG.firebase);
+                    database = firebase.database();
+                    isFirebaseEnabled = true;
+                    console.log("✅ Firebase connected!");
+                    
+                    // Listen for real-time updates
+                    database.ref('stock').on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            updateStockDisplay(data.amount || CONFIG.defaultStock);
+                            updatePackageStockStatus();
+                            updateLastUpdateTime(data.lastUpdate || Date.now());
+                            console.log("📊 Stock updated from Firebase:", data.amount);
+                        }
+                    });
+                    
+                    return;
+                } catch (error) {
+                    console.log("❌ Firebase error:", error);
+                    isFirebaseEnabled = false;
+                }
+            }
+            
+            // Fallback ke localStorage jika Firebase tidak tersedia
+            console.log("📱 Using localStorage (local only)");
+            initializeLocalStock();
+        }
+
+        // Firebase: Save stock to database
+        function saveStockToDatabase(stock) {
+            if (isFirebaseEnabled && database) {
+                database.ref('stock').set({
+                    amount: stock,
+                    lastUpdate: Date.now(),
+                    updatedBy: 'admin'
+                }).then(() => {
+                    console.log("✅ Stock saved to Firebase");
+                    showNotification('Stock berhasil diupdate untuk semua pengunjung!', 'success');
+                }).catch((error) => {
+                    console.error("❌ Firebase save error:", error);
+                    showNotification('Error: Gagal menyimpan ke database', 'error');
+                });
+            } else if (CONFIG.jsonStorage.enabled) {
+                // Alternatif menggunakan JSONBin.io
+                saveToJSONStorage(stock);
+            } else {
+                // Fallback ke localStorage
+                localStorage.setItem('borneobux_stock', stock.toString());
+                localStorage.setItem('borneobux_last_update', Date.now().toString());
+                showNotification('Stock diupdate (hanya lokal)', 'warning');
+            }
+        }
+
+        // JSONBin.io alternative (free cloud storage)
+        function saveToJSONStorage(stock) {
+            if (!CONFIG.jsonStorage.enabled) return;
+            
+            const data = {
+                stock: stock,
+                lastUpdate: Date.now(),
+                updatedBy: 'admin'
+            };
+
+            fetch(CONFIG.jsonStorage.url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': CONFIG.jsonStorage.apiKey
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("✅ Stock saved to JSONBin");
+                showNotification('Stock berhasil diupdate untuk semua pengunjung!', 'success');
+                broadcastStockUpdate(stock);
+            })
+            .catch(error => {
+                console.error("❌ JSONBin error:", error);
+                showNotification('Error: Gagal menyimpan ke cloud storage', 'error');
+            });
+        }
+
+        // Load stock dari JSONBin.io
+        function loadFromJSONStorage() {
+            if (!CONFIG.jsonStorage.enabled) return;
+            
+            fetch(CONFIG.jsonStorage.url + '/latest', {
+                headers: {
+                    'X-Master-Key': CONFIG.jsonStorage.apiKey
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.record) {
+                    updateStockDisplay(data.record.stock || CONFIG.defaultStock);
+                    updatePackageStockStatus();
+                    updateLastUpdateTime(data.record.lastUpdate || Date.now());
+                }
+            })
+            .catch(error => {
+                console.error("❌ JSONBin load error:", error);
+                initializeLocalStock();
+            });
+        }
+
+        // Broadcast update ke semua tab/window yang terbuka
+        function broadcastStockUpdate(stock) {
+            // Menggunakan BroadcastChannel untuk sync antar tab
+            if ('BroadcastChannel' in window) {
+                const channel = new BroadcastChannel('borneobux-stock');
+                channel.postMessage({
+                    type: 'stock-update',
+                    stock: stock,
+                    timestamp: Date.now()
+                });
+            }
+        }
+
+        // Listen untuk broadcast dari tab lain
+        function listenForBroadcasts() {
+            if ('BroadcastChannel' in window) {
+                const channel = new BroadcastChannel('borneobux-stock');
+                channel.addEventListener('message', (event) => {
+                    if (event.data.type === 'stock-update') {
+                        updateStockDisplay(event.data.stock);
+                        updatePackageStockStatus();
+                        updateLastUpdateTime(event.data.timestamp);
+                    }
+                });
+            }
+        }
+
+        // Fallback untuk localStorage
+        function initializeLocalStock() {
+            const savedStock = localStorage.getItem('borneobux_stock');
+            const savedUpdate = localStorage.getItem('borneobux_last_update');
+            
+            if (savedStock) {
+                updateStockDisplay(parseInt(savedStock));
+                if (savedUpdate) {
+                    updateLastUpdateTime(parseInt(savedUpdate));
+                }
+            } else {
+                updateStockDisplay(CONFIG.defaultStock);
+                localStorage.setItem('borneobux_stock', CONFIG.defaultStock.toString());
+                localStorage.setItem('borneobux_last_update', Date.now().toString());
+            }
+        }
+
+        // Get current stock dari database atau localStorage
+        function getCurrentStock() {
+            if (isFirebaseEnabled) {
+                // Stock akan diupdate via real-time listener
+                return parseInt(document.getElementById('totalStock').textContent.replace(/[^\d]/g, '')) || CONFIG.defaultStock;
+            } else {
+                const savedStock = localStorage.getItem('borneobux_stock');
+                return savedStock ? parseInt(savedStock) : CONFIG.defaultStock;
+            }
+        }
+
+        // Update last update time display
+        function updateLastUpdateTime(timestamp) {
+            const time = new Date(timestamp).toLocaleTimeString('id-ID');
+            document.getElementById('lastUpdate').textContent = time;
+            
+            const adminLastUpdate = document.getElementById('adminLastUpdate');
+            if (adminLastUpdate) {
+                adminLastUpdate.textContent = time;
+            }
+        }
+
+        // Update stock display
+        function updateStockDisplay(stock) {
+            document.getElementById('totalStock').textContent = stock.toLocaleString('id-ID') + ' Robux';
+            
+            // Update admin panel juga
+            const adminCurrentStock = document.getElementById('adminCurrentStock');
+            const adminStockStatus = document.getElementById('adminStockStatus');
+            const adminLastUpdate = document.getElementById('adminLastUpdate');
+            
+            if (adminCurrentStock) {
+                adminCurrentStock.textContent = stock.toLocaleString('id-ID');
+                
+                // Determine stock status
+                let status = 'High Stock';
+                let statusColor = 'text-green-600';
+                
+                if (stock < 10000) {
+                    status = 'Low Stock';
+                    statusColor = 'text-red-600';
+                } else if (stock < 25000) {
+                    status = 'Medium Stock';
+                    statusColor = 'text-yellow-600';
+                }
+                
+                adminStockStatus.textContent = status;
+                adminStockStatus.className = `font-bold ${statusColor}`;
+                adminLastUpdate.textContent = new Date().toLocaleTimeString('id-ID');
+            }
+        }
+
+        // Get current stock
+        function getCurrentStock() {
+            const savedStock = localStorage.getItem('borneobux_stock');
+            return savedStock ? parseInt(savedStock) : CONFIG.defaultStock;
+        }
+
+        // ===== ADMIN FUNCTIONS =====
+        
+        let isAdminLoggedIn = false;
+
+        function toggleAdminPanel() {
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === CONFIG.adminPassword) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminControls').classList.remove('hidden');
+                updateStockDisplay(getCurrentStock());
+                alert('Login berhasil! Selamat datang, Admin.');
+            } else {
+                alert('Password salah!');
+            }
+        }
+
+        function updateStock() {
+            if (!isAdminLoggedIn) {
+                alert('Silakan login terlebih dahulu!');
+                return;
+            }
+
+            const newStock = parseInt(document.getElementById('newStockAmount').value);
+            
+            if (!newStock || newStock < 0) {
+                alert('Masukkan jumlah stock yang valid!');
+                return;
+            }
+
+            // Save ke database (Firebase/JSONBin) atau localStorage
+            saveStockToDatabase(newStock);
+            updateStockDisplay(newStock);
+            updatePackageStockStatus();
+            updateLastUpdateTime(Date.now());
+            document.getElementById('newStockAmount').value = '';
+        }
+
+        function quickStock(amount) {
+            if (!isAdminLoggedIn) {
+                alert('Silakan login terlebih dahulu!');
+                return;
+            }
+
+            const currentStock = getCurrentStock();
+            const newStock = currentStock + amount;
+            
+            // Save ke database (Firebase/JSONBin) atau localStorage
+            saveStockToDatabase(newStock);
+            updateStockDisplay(newStock);
+            updatePackageStockStatus();
+            updateLastUpdateTime(Date.now());
+            
+            showNotification(`+${amount.toLocaleString('id-ID')} Robux ditambahkan!`, 'success');
+        }
+
+        function resetStock() {
+            if (!isAdminLoggedIn) {
+                alert('Silakan login terlebih dahulu!');
+                return;
+            }
+
+            if (confirm('Yakin ingin reset stock ke 0? Tindakan ini tidak bisa dibatalkan!')) {
+                saveStockToDatabase(0);
+                updateStockDisplay(0);
+                updatePackageStockStatus();
+                updateLastUpdateTime(Date.now());
+                showNotification('Stock berhasil direset!', 'warning');
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-bold transform translate-x-full transition-transform duration-300`;
+            
+            switch(type) {
+                case 'success':
+                    notification.classList.add('bg-green-500');
+                    break;
+                case 'warning':
+                    notification.classList.add('bg-yellow-500');
+                    break;
+                case 'error':
+                    notification.classList.add('bg-red-500');
+                    break;
+                default:
+                    notification.classList.add('bg-blue-500');
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Auto refresh stock setiap 30 detik
+        setInterval(() => {
+            const savedUpdate = localStorage.getItem('borneobux_last_update');
+            if (savedUpdate) {
+                const lastUpdateTime = new Date(parseInt(savedUpdate));
+                document.getElementById('lastUpdate').textContent = lastUpdateTime.toLocaleTimeString('id-ID');
+            }
+        }, 30000);
+        
+        // Generate paket Robux
+        function generatePackages() {
+            const container = document.getElementById('packageContainer');
+            const packageGrid = document.querySelector('#packages .grid');
+            
+            // Clear existing content
+            packageGrid.innerHTML = '';
+            
+            CONFIG.packages.forEach(pkg => {
+                const price = pkg.robux * CONFIG.robuxPrice;
+                const isPopular = pkg.popular ? 'relative' : '';
+                const popularBadge = pkg.popular ? 
+                    `<div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-${pkg.color}-500 text-white px-4 py-1 rounded-full text-sm font-bold">POPULER</span>
+                    </div>` : '';
+
+                const packageCard = `
+                    <div class="bg-gradient-to-br from-${pkg.color}-50 to-${pkg.color}-100 rounded-2xl p-6 card-hover border border-${pkg.color}-200 ${isPopular} stock-indicator">
+                        ${popularBadge}
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-${pkg.color}-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-${pkg.icon} text-white text-2xl"></i>
+                            </div>
+                            <h4 class="text-2xl font-bold text-gray-800 mb-2">${pkg.robux} Robux</h4>
+                            <p class="text-3xl font-bold text-${pkg.color}-600 mb-2">Rp ${price.toLocaleString('id-ID')}</p>
+                            <div class="mb-4">
+                                <div class="flex items-center justify-center space-x-1 text-sm text-gray-600">
+                                    <i class="fas fa-box text-${pkg.color}-500"></i>
+                                    <span id="stock-${pkg.robux}">Checking...</span>
+                                </div>
+                            </div>
+                            <button onclick="selectPackage(${pkg.robux}, ${price})" id="btn-${pkg.robux}" class="w-full bg-${pkg.color}-600 hover:bg-${pkg.color}-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                                Pilih Paket
+                            </button>
+                        </div>
+                    </div>
+                `;
+                packageGrid.innerHTML += packageCard;
+            });
+
+            // Update stock status untuk setiap paket
+            updatePackageStockStatus();
+        }
+
+        // Update status stock untuk setiap paket
+        function updatePackageStockStatus() {
+            const currentStock = getCurrentStock();
+            
+            CONFIG.packages.forEach(pkg => {
+                const stockElement = document.getElementById(`stock-${pkg.robux}`);
+                const buttonElement = document.getElementById(`btn-${pkg.robux}`);
+                
+                if (stockElement && buttonElement) {
+                    if (currentStock >= pkg.robux) {
+                        stockElement.textContent = 'Available';
+                        stockElement.className = 'text-green-600 font-medium';
+                        buttonElement.disabled = false;
+                        buttonElement.classList.remove('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        stockElement.textContent = 'Out of Stock';
+                        stockElement.className = 'text-red-600 font-medium';
+                        buttonElement.disabled = true;
+                        buttonElement.classList.add('opacity-50', 'cursor-not-allowed');
+                        buttonElement.textContent = 'Stock Habis';
+                    }
+                }
+            });
+        }
+
+        // Update custom price
+        document.getElementById('customRobux').addEventListener('input', function() {
+            const robux = parseInt(this.value) || 0;
+            const price = robux * CONFIG.robuxPrice;
+            document.getElementById('customPrice').textContent = 'Rp ' + price.toLocaleString('id-ID');
+        });
+
+        // Select package
+        function selectPackage(robux, price) {
+            const currentStock = getCurrentStock();
+            
+            if (currentStock < robux) {
+                alert('Maaf, stock tidak mencukupi untuk paket ini!');
+                return;
+            }
+            
+            document.getElementById('totalRobux').value = robux;
+            document.getElementById('totalPrice').value = 'Rp ' + price.toLocaleString('id-ID');
+            document.getElementById('orderForm').classList.remove('hidden');
+        }
+
+        // Select custom
+        function selectCustom() {
+            const robux = parseInt(document.getElementById('customRobux').value);
+            const currentStock = getCurrentStock();
+            
+            if (!robux || robux <= 0) {
+                alert('Masukkan jumlah Robux yang valid!');
+                return;
+            }
+            
+            if (currentStock < robux) {
+                alert(`Maaf, stock tidak mencukupi! Stock tersedia: ${currentStock.toLocaleString('id-ID')} Robux`);
+                return;
+            }
+            
+            const price = robux * CONFIG.robuxPrice;
+            document.getElementById('totalRobux').value = robux;
+            document.getElementById('totalPrice').value = 'Rp ' + price.toLocaleString('id-ID');
+            document.getElementById('orderForm').classList.remove('hidden');
+        }
+
+        // Close order form
+        function closeOrderForm() {
+            document.getElementById('orderForm').classList.add('hidden');
+        }
+
+        // Send WhatsApp
+        function sendWhatsApp() {
+            const username = document.getElementById('username').value;
+            const robux = document.getElementById('totalRobux').value;
+            const price = document.getElementById('totalPrice').value;
+            const payment = document.getElementById('paymentMethod').value;
+
+            if (!username || !robux || !payment) {
+                alert('Mohon lengkapi semua field!');
+                return;
+            }
+
+            // Kurangi stock setelah order
+            const currentStock = getCurrentStock();
+            const newStock = currentStock - parseInt(robux);
+            
+            // Save ke database atau localStorage
+            saveStockToDatabase(newStock);
+            updateStockDisplay(newStock);
+            updatePackageStockStatus();
+            updateLastUpdateTime(Date.now());
+
+            const message = `Halo Borneobux! 🎮
+
+Saya ingin memesan Robux dengan detail:
+👤 Username: ${username}
+💎 Jumlah Robux: ${robux}
+💰 Total Harga: ${price}
+💳 Metode Pembayaran: ${payment}
+
+Mohon info lebih lanjut untuk proses pembayaran. Terima kasih!`;
+
+            const whatsappUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Close form and show success
+            closeOrderForm();
+            showNotification('Pesanan berhasil dikirim ke WhatsApp!', 'success');
+        }
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+
+        // Toggle FAQ
+        function toggleFAQ(id) {
+            const faq = document.getElementById(`faq${id}`);
+            const icon = document.getElementById(`icon${id}`);
+            
+            if (faq.classList.contains('hidden')) {
+                faq.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                faq.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuButton = document.querySelector('[onclick="toggleMobileMenu()"]');
+            
+            if (!mobileNav.contains(e.target) && !menuButton.contains(e.target)) {
+                mobileNav.classList.remove('active');
+            }
+        });
+
+        // Initialize website
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize database connection
+            initializeDatabase();
+            
+            // Initialize UI
+            generatePackages();
+            
+            // Listen for broadcasts dari tab lain
+            listenForBroadcasts();
+            
+            // Auto refresh untuk non-Firebase setup
+            if (!isFirebaseEnabled) {
+                setInterval(() => {
+                    if (CONFIG.jsonStorage.enabled) {
+                        loadFromJSONStorage();
+                    } else {
+                        updateStockDisplay(getCurrentStock());
+                        updatePackageStockStatus();
+                    }
+                }, 10000); // Check every 10 seconds
+            }
+        });
+
+        // ===== ANIMASI DAN EFEK VISUAL =====
+        
+        // Parallax effect untuk hero section
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.gradient-bg');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+
+        // Animasi counter untuk statistik
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                element.textContent = Math.floor(current);
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                }
+            }, 20);
+        }
+
+        // Intersection Observer untuk animasi scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe semua card
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
